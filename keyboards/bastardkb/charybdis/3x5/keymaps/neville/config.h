@@ -65,3 +65,21 @@
 
 //#define CHARYBDIS_DRAGSCROLL_REVERSE_X
 #define CHARYBDIS_DRAGSCROLL_REVERSE_Y
+
+/*************** Pointing device configuration ***************/
+#ifdef POINTING_DEVICE_ENABLE
+    #define POINTING_DEVICE_COMBINED
+
+    /* --- PMW3360 (SPI) --- */
+    #define PMW3360_CS_PIN    B0
+    #define PMW3360_SCLK_PIN  B1
+    #define PMW3360_MOSI_PIN  B2
+    #define PMW3360_MISO_PIN  B3
+
+    /* --- Cirque Pinnacle (I2C) --- */
+    #define CIRQUE_PINNACLE_ADDR 0x2A   // default I²C address
+    #define I2C1_SCL_PIN D0
+    #define I2C1_SDA_PIN D1
+#endif
+
+
