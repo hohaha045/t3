@@ -95,24 +95,58 @@ _______,    _______,    _______,            KC_BTN1,     KC_BTN2
 // clang-format on
 
 #ifdef POINTING_DEVICE_ENABLE
+static uint16_t auto_pointer_layer_timer = 0;
+
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    // Read PMW3360 (SPI trackball)
-    report_mouse_t pmw_report = pmw3360_read();
+    // Get the default QMK report first (from enabled drivers)
+    report_mouse_t combined = pointing_device_task();
 
-    // Read Cirque Pinnacle (I²C trackpad)
-    report_mouse_t cirque_report = cirque_pinnacle_read();
+    // --- If PMW3360 is enabled ---
+    #ifdef PMW3360_ENABLE
+    report_mouse_t pmw_report = pmw3360_get_report();
+    combined.x += pmw_report.x;
+    combined.y += pmw_report.y;
+    combined.v += pmw_report.v;
+    combined.h += pmw_report.h;
+    #endif
 
-    // Combine motions
-    mouse_report.x += pmw_report.x + cirque_report.x;
-    mouse_report.y += pmw_report.y + cirque_report.y;
+    // --- If Cirque Pinnacle is enabled ---
+    #ifdef CIRQUE_PINNACLE_ENABLE
+    report_mouse_t cirque_report = cirque_pinnacle_get_report();
+    combined.x += cirque_report.x;
+    combined.y += cirque_report.y;
+    combined.v += cirque_report.v;
+    combined.h += cirque_report.h;
+    #endif
 
-    // Optional: combine scroll/wheel
-    mouse_report.v += pmw_report.v + cirque_report.v;
-    mouse_report.h += pmw_report.h + cirque_report.h;
+    // === Auto pointer layer trigger ===
+    if (abs(combined.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD ||
+        abs(combined.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
+        if (auto_pointer_layer_timer == 0) {
+            layer_on(LAYER_POINTER);
+            #ifdef RGB_MATRIX_ENABLE
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
+            rgb_matrix_sethsv_noeeprom(HSV_GREEN);
+            #endif
+        }
+        auto_pointer_layer_timer = timer_read();
+    }
 
-    return mouse_report;
+    return combined;
+}
+
+void matrix_scan_user(void) {
+    if (auto_pointer_layer_timer != 0 &&
+        TIMER_DIFF_16(timer_read(), auto_pointer_layer_timer) >= CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS) {
+        auto_pointer_layer_timer = 0;
+        layer_off(LAYER_POINTER);
+        #ifdef RGB_MATRIX_ENABLE
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
+        #endif
+    }
 }
 #endif // POINTING_DEVICE_ENABLE
+
 
 
 void matrix_scan_user(void) {
