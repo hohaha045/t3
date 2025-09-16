@@ -15,6 +15,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include QMK_KEYBOARD_H
+#include "drivers/sensors/cirque_pinnacle.h"
+#include "drivers/sensors/pmw3360.h"
+
 
 #ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 #    include "timer.h"
@@ -28,22 +31,7 @@ LAYER_RAISE,
 LAYER_DUAL,
 };
 
-/**
-// Automatically enable sniping-mode on the pointer layer.
-#define CHARYBDIS_AUTO_SNIPING_ON_LAYER LAYER_POINTER
 
-#ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-static uint16_t auto_pointer_layer_timer = 0;
-
-#    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-#        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 1000
-#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-
-#    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-#        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 8
-#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-#endif     // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-*/
 
 #define LOWER MO(LAYER_LOWER)
 #define RAISE MO(LAYER_RAISE)
@@ -92,20 +80,25 @@ _______,    _______,    _______,            KC_BTN1,     KC_BTN2
 // clang-format on
 
 #ifdef POINTING_DEVICE_ENABLE
-#    ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-if (abs(mouse_report.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD || abs(mouse_report.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
-if (auto_pointer_layer_timer == 0) {
-layer_on(LAYER_POINTER);
-#        ifdef RGB_MATRIX_ENABLE
-rgb_matrix_mode_noeeprom(RGB_MATRIX_NONE);
-rgb_matrix_sethsv_noeeprom(HSV_GREEN);
-#        endif // RGB_MATRIX_ENABLE
+    // Read PMW3360 (SPI trackball)
+    report_mouse_t pmw_report = pmw3360_read();
+
+    // Read Cirque Pinnacle (I²C trackpad)
+    report_mouse_t cirque_report = cirque_pinnacle_read();
+
+    // Combine motions
+    mouse_report.x += pmw_report.x + cirque_report.x;
+    mouse_report.y += pmw_report.y + cirque_report.y;
+
+    // Optional: combine scroll/wheel
+    mouse_report.v += pmw_report.v + cirque_report.v;
+    mouse_report.h += pmw_report.h + cirque_report.h;
+
+    return mouse_report;
 }
-auto_pointer_layer_timer = timer_read();
-}
-return mouse_report;
-}
+#endif // POINTING_DEVICE_ENABLE
+
 
 void matrix_scan_user(void) {
 if (auto_pointer_layer_timer != 0 && TIMER_DIFF_16(timer_read(), auto_pointer_layer_timer) >= CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS) {
