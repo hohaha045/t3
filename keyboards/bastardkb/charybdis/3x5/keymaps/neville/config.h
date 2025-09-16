@@ -65,3 +65,16 @@
 
 //#define CHARYBDIS_DRAGSCROLL_REVERSE_X
 #define CHARYBDIS_DRAGSCROLL_REVERSE_Y
+
+
+//from here i have made changes for the  tracking pad  
+// enable combined logic in user code (we will merge reports ourselves)
+#define POINTING_DEVICE_COMBINED
+
+// Cirque I2C address (adjust if your hardware uses different address)
+#define CIRQUE_PINNACLE_ADDR 0x2A
+
+// If you need to override I2C pins for this keyboard, add them here:
+// #define I2C1_SCL_PIN B5
+// #define I2C1_SDA_PIN B4
+
