@@ -21,6 +21,15 @@
 #undef DYNAMIC_KEYMAP_LAYER_COUNT
 #define DYNAMIC_KEYMAP_LAYER_COUNT 4
 #endif // VIA_ENABLE
+// enable combined logic in user code (we will merge reports ourselves)
+#define POINTING_DEVICE_COMBINED
+
+// Cirque I2C address (adjust if your hardware uses different address)
+#define CIRQUE_PINNACLE_ADDR 0x2A
+
+// If you need to override I2C pins for this keyboard, add them here:
+// #define I2C1_SCL_PIN B5
+// #define I2C1_SDA_PIN B4
 
 #ifndef TAPPING_TERM
 /**
