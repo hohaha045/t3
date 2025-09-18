@@ -16,71 +16,58 @@
 */
 #pragma once
 
+/* ---------------- VIA ---------------- */
 #ifdef VIA_ENABLE
-/* VIA configuration. */
-#undef DYNAMIC_KEYMAP_LAYER_COUNT
-#define DYNAMIC_KEYMAP_LAYER_COUNT 4
+#    undef DYNAMIC_KEYMAP_LAYER_COUNT
+#    define DYNAMIC_KEYMAP_LAYER_COUNT 4
 #endif // VIA_ENABLE
 
+/* ---------------- Tapping ---------------- */
 #ifndef TAPPING_TERM
-/**
-* \brief Configure the global tapping term (default: 200ms).
-* If you have a lot of accidental mod activations, crank up the tapping term.
-* See docs.qmk.fm/using-qmk/software-features/tap_hold#tapping-term
-*/
-#define TAPPING_TERM 200
+#    define TAPPING_TERM 200   // default tapping term
 #endif  // TAPPING_TERM
 
 #ifndef __arm__
-/* Disable unused features. */
-#define NO_ACTION_ONESHOT
-#endif // __arm__
+#    define NO_ACTION_ONESHOT  // disable unused features on non-ARM
+#endif
 
-/* Charybdis-specific features. */
-
+/* ---------------- Charybdis-specific ---------------- */
 #ifdef POINTING_DEVICE_ENABLE
     #define POINTING_DEVICE_SCROLL_ENABLE
     #define POINTING_DEVICE_INVERT_V
 
-    // Automatically enable the pointer layer when moving the trackball.
+    // Automatically enable pointer layer when moving the trackball.
     #define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
     #define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 200
     #define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 8
 #endif // POINTING_DEVICE_ENABLE
 
-#define COMBO_COUNT 3 // Change this number.
+/* ---------------- Combos ---------------- */
+#define COMBO_COUNT 3
 #define COMBO_TERM 120
 
-//#define RETRO_SHIFT 500
+/* ---------------- Layering ---------------- */
 #define LAYER_STATE_8BIT
 
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE
 #define NO_ACTION_ONESHOT
 
-//#define IGNORE_MOD_TAP_INTERRUPT
 #define HOLD_ON_OTHER_KEY_PRESS
+//#define IGNORE_MOD_TAP_INTERRUPT
 //#define PERMISSIVE_HOLD
 
+/* ---------------- RGB ---------------- */
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
 
 //#define CHARYBDIS_DRAGSCROLL_REVERSE_X
 #define CHARYBDIS_DRAGSCROLL_REVERSE_Y
 
-
-//from here i have made changes for the  tracking pad  
-// enable combined logic in user code (we will merge reports ourselves)
-#define POINTING_DEVICE_COMBINED
-
-// Cirque I2C address (adjust if your hardware uses different address)
-#define CIRQUE_PINNACLE_ADDR 0x2A
-
-// If you need to override I2C pins for this keyboard, add them here:
-// #define I2C1_SCL_PIN B5
-// #define I2C1_SDA_PIN B4
-/*************** Pointing device configuration ***************/
+/* ==========================================================
+   Pointing Device Configuration (Trackball + Touchpad)
+   ========================================================== */
 #ifdef POINTING_DEVICE_ENABLE
-    #define POINTING_DEVICE_COMBINED
+    #define POINTING_DEVICE_COMBINED   // merge PMW3360 + Cirque reports
 
     /* --- PMW3360 (SPI) --- */
     #define PMW3360_CS_PIN    B0
@@ -93,4 +80,3 @@
     #define I2C1_SCL_PIN D0
     #define I2C1_SDA_PIN D1
 #endif
-
