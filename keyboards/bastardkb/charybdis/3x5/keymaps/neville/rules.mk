@@ -18,3 +18,6 @@ CONSOLE_ENABLE = yes
 
 # Enable trackball / trackpad support (PMW3360 + Cirque)
 POINTING_DEVICE_ENABLE = yes
+
+# Use custom pointing device driver
+POINTING_DEVICE_DRIVER = custom
