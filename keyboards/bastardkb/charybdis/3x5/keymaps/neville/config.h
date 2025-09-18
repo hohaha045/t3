@@ -77,6 +77,6 @@
 
     /* --- Cirque Pinnacle (I2C) --- */
     #define CIRQUE_PINNACLE_ADDR 0x2A   // default I²C address
-    #define I2C1_SCL_PIN D0
-    #define I2C1_SDA_PIN D1
+    #define I2C1_SCL_PIN D2
+    #define I2C1_SDA_PIN D3
 #endif
