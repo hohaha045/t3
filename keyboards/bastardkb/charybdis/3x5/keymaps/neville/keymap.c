@@ -23,31 +23,16 @@
 #    include "timer.h"
 #endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 
-
+// ---------------- Layers ----------------
 enum charybdis_keymap_layers {
-LAYER_BASE = 0,
-LAYER_LOWER,
-LAYER_RAISE,
-LAYER_DUAL,
+    LAYER_BASE = 0,
+    LAYER_LOWER,
+    LAYER_RAISE,
+    LAYER_DUAL,
+    LAYER_POINTER,   // ✅ Added missing layer
 };
 
-/**
-// Automatically enable sniping-mode on the pointer layer.
-#define CHARYBDIS_AUTO_SNIPING_ON_LAYER LAYER_POINTER
-
-// #ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-// static uint16_t auto_pointer_layer_timer = 0;
-
-// #    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-// #        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS 1000
-// #    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS
-
-// #    ifndef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-// #        define CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD 8
-// #    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD
-// #endif     // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-// */
-
+// ---------------- Layer Keys ----------------
 #define LOWER MO(LAYER_LOWER)
 #define RAISE MO(LAYER_RAISE)
 #define PT_SPC LT(LAYER_DUAL, KC_SPC)
@@ -60,48 +45,47 @@ LAYER_DUAL,
 #    define SNIPING KC_NO
 #endif // !POINTING_DEVICE_ENABLE
 
+// ---------------- Keymaps ----------------
 // clang-format off
-/** \brief QWERTY layout (3 rows, 10 columns). */
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_BASE] = LAYOUT(
-KC_Q,      KC_W,       KC_E,        KC_R,              KC_T,              KC_Y,      KC_U,        KC_I,        KC_O,              KC_P, \
-SFT_T(KC_A),      KC_S,       KC_D,        KC_F,       ALT_T(KC_G),      RALT_T(KC_H),      KC_J,        KC_K,        KC_L,   RSFT_T(KC_QUOT), \
-CTL_T(KC_Z),      KC_X,       KC_C,        KC_V,      LGUI_T(KC_B),      RCMD_T(KC_N),      KC_M,     KC_COMM,      KC_DOT,            KC_ENT, \
+KC_Q,      KC_W,       KC_E,        KC_R,              KC_T,              KC_Y,      KC_U,        KC_I,        KC_O,              KC_P,
+SFT_T(KC_A),      KC_S,       KC_D,        KC_F,       ALT_T(KC_G),      RALT_T(KC_H),      KC_J,        KC_K,        KC_L,   RSFT_T(KC_QUOT),
+CTL_T(KC_Z),      KC_X,       KC_C,        KC_V,      LGUI_T(KC_B),      RCMD_T(KC_N),      KC_M,     KC_COMM,      KC_DOT,            KC_ENT,
 RAISE,    RAISE,   LOWER,           KC_BTN1,   KC_BTN2
 ),
 
-[LAYER_RAISE] = LAYOUT( 
-KC_ESC,      KC_7,       KC_8,         KC_9,           KC_GRV,           KC_LPRN,    KC_RPRN,     KC_MINS,     KC_EQL,           KC_BSPC, \
-SFT_T(KC_TAB),      KC_4,       KC_5,         KC_6,          KC_LALT,            KC_DLR,    KC_AMPR,       KC_AT,    KC_SCLN,   RSFT_T(KC_QUOT), \
-CTL_T(KC_0),      KC_1,       KC_2,         KC_3,           KC_SPC,           KC_ASTR,    KC_EXLM,     KC_BSLS,    KC_SLSH,            KC_ENT, \
+[LAYER_RAISE] = LAYOUT(
+KC_ESC,      KC_7,       KC_8,         KC_9,           KC_GRV,           KC_LPRN,    KC_RPRN,     KC_MINS,     KC_EQL,           KC_BSPC,
+SFT_T(KC_TAB),      KC_4,       KC_5,         KC_6,          KC_LALT,            KC_DLR,    KC_AMPR,       KC_AT,    KC_SCLN,   RSFT_T(KC_QUOT),
+CTL_T(KC_0),      KC_1,       KC_2,         KC_3,           KC_SPC,           KC_ASTR,    KC_EXLM,     KC_BSLS,    KC_SLSH,            KC_ENT,
 XXXXXXX,   XXXXXXX,    _______,           KC_BTN1,   KC_BTN2
 ),
 
 [LAYER_LOWER] = LAYOUT(
-KC_F9,    KC_F10,     KC_F11,       KC_F12,         KC_TILD,           KC_LBRC,    KC_RBRC,    KC_UNDS,     KC_PLUS,           KC_DEL, \
-SFT_T(KC_F5),     KC_F6,      KC_F7,        KC_F8,         KC_LCMD,           KC_LCBR,    KC_RCBR,    KC_HASH,     KC_COLN,          KC_RSFT, \
-CTL_T(KC_F1),     KC_F2,      KC_F3,        KC_F4,          KC_SPC,           KC_PERC,    KC_CIRC,    KC_PIPE,     KC_QUES,           KC_ENT, \
+KC_F9,    KC_F10,     KC_F11,       KC_F12,         KC_TILD,           KC_LBRC,    KC_RBRC,    KC_UNDS,     KC_PLUS,           KC_DEL,
+SFT_T(KC_F5),     KC_F6,      KC_F7,        KC_F8,         KC_LCMD,           KC_LCBR,    KC_RCBR,    KC_HASH,     KC_COLN,          KC_RSFT,
+CTL_T(KC_F1),     KC_F2,      KC_F3,        KC_F4,          KC_SPC,           KC_PERC,    KC_CIRC,    KC_PIPE,     KC_QUES,           KC_ENT,
 _______,        _______,   XXXXXXX,           KC_BTN1,    KC_BTN2
 ),
 
 [LAYER_DUAL] = LAYOUT(
-KC_BRID,   KC_BRIU,   C(KC_UP),    LAG(KC_D),        RGB_VAI,            KC_MRWD,     KC_MPLY,   KC_MFFD,      KC_VOLD,         KC_VOLU, \
-SFT_T(KC_CAPS),   RGB_SAD,    RGB_SAI,      RGB_HUD,        RGB_HUI,            DPI_MOD,    DPI_RMOD,     KC_UP,      KC_PGUP,         KC_PGDN, \
-SNIPING,   S_D_MOD,   S_D_RMOD,        DT_UP,        DT_DOWN,            DT_PRNT,     KC_LEFT,   KC_DOWN,     KC_RIGHT,         DRG_TOG, \
+KC_BRID,   KC_BRIU,   C(KC_UP),    LAG(KC_D),        RGB_VAI,            KC_MRWD,     KC_MPLY,   KC_MFFD,      KC_VOLD,         KC_VOLU,
+SFT_T(KC_CAPS),   RGB_SAD,    RGB_SAI,      RGB_HUD,        RGB_HUI,            DPI_MOD,    DPI_RMOD,     KC_UP,      KC_PGUP,         KC_PGDN,
+SNIPING,   S_D_MOD,   S_D_RMOD,        DT_UP,        DT_DOWN,            DT_PRNT,     KC_LEFT,   KC_DOWN,     KC_RIGHT,         DRG_TOG,
 _______,    _______,    _______,            KC_BTN1,     KC_BTN2
 ),
 };
-
 // clang-format on
 
+// ---------------- Pointing Device ----------------
 #ifdef POINTING_DEVICE_ENABLE
 static uint16_t auto_pointer_layer_timer = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    // Get the default QMK report first (from enabled drivers)
-    report_mouse_t combined = pointing_device_task();
+    // ✅ Start from provided report
+    report_mouse_t combined = mouse_report;
 
-    // --- If PMW3360 is enabled ---
     #ifdef PMW3360_ENABLE
     report_mouse_t pmw_report = pmw3360_get_report();
     combined.x += pmw_report.x;
@@ -110,7 +94,6 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     combined.h += pmw_report.h;
     #endif
 
-    // --- If Cirque Pinnacle is enabled ---
     #ifdef CIRQUE_PINNACLE_ENABLE
     report_mouse_t cirque_report = cirque_pinnacle_get_report();
     combined.x += cirque_report.x;
@@ -119,7 +102,6 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     combined.h += cirque_report.h;
     #endif
 
-    // === Auto pointer layer trigger ===
     if (abs(combined.x) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD ||
         abs(combined.y) > CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_THRESHOLD) {
         if (auto_pointer_layer_timer == 0) {
@@ -147,38 +129,16 @@ void matrix_scan_user(void) {
 }
 #endif // POINTING_DEVICE_ENABLE
 
-
-
-void matrix_scan_user(void) {
-if (auto_pointer_layer_timer != 0 && TIMER_DIFF_16(timer_read(), auto_pointer_layer_timer) >= CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_TIMEOUT_MS) {
-auto_pointer_layer_timer = 0;
-layer_off(LAYER_POINTER);
-#        ifdef RGB_MATRIX_ENABLE
-rgb_matrix_mode_noeeprom(RGB_MATRIX_DEFAULT_MODE);
-#        endif // RGB_MATRIX_ENABLE
-}
-}
-#    endif // CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
-
-#    ifdef CHARYBDIS_AUTO_SNIPING_ON_LAYER
-layer_state_t layer_state_set_user(layer_state_t state) {
-charybdis_set_pointer_sniping_enabled(layer_state_cmp(state, CHARYBDIS_AUTO_SNIPING_ON_LAYER));
-return state;
-}
-#    endif // CHARYBDIS_AUTO_SNIPING_ON_LAYER
-#endif     // POINTING_DEVICE_ENABLE
-
+// ---------------- RGB ----------------
 #ifdef RGB_MATRIX_ENABLE
-// Forward-declare this helper function since it is defined in
-// rgb_matrix.c.
-void rgb_matrix_update_pwm_buffers(void);
+void rgb_matrix_update_pwm_buffers(void);  // forward declare
 #endif
 
+// ---------------- Combos ----------------
 enum combos {
-RAISE_LOWER_LAYER_DUAL,
-BTN1_BTN2_BTN3,
-DOT_COMM_DRGSCRL,
-
+    RAISE_LOWER_LAYER_DUAL,
+    BTN1_BTN2_BTN3,
+    DOT_COMM_DRGSCRL,
 };
 
 const uint16_t PROGMEM raise_lower_layer_dual[] = { RAISE, LOWER, COMBO_END};
@@ -186,8 +146,7 @@ const uint16_t PROGMEM btn1_btn2_btn3[] = { KC_BTN1, KC_BTN2, COMBO_END};
 const uint16_t PROGMEM dot_ent_drgscrl[] = { KC_DOT, KC_COMM, COMBO_END};
 
 combo_t key_combos[] = {
-COMBO(raise_lower_layer_dual, MO(LAYER_DUAL)),
-COMBO(btn1_btn2_btn3, KC_BTN3),
-COMBO(dot_ent_drgscrl, DRGSCRL),
-
+    COMBO(raise_lower_layer_dual, MO(LAYER_DUAL)),
+    COMBO(btn1_btn2_btn3, KC_BTN3),
+    COMBO(dot_ent_drgscrl, DRGSCRL),
 };
