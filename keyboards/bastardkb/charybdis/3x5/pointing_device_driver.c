@@ -1,18 +1,22 @@
-#include "pointing_device.h"
 #include "drivers/sensors/cirque_pinnacle.h"
-#include "print.h"
+#include "pointing_device.h"
+#include "print.h" // For debug output to QMK console
 
-void pointing_device_init(void) {
+void pointing_device_driver_init(void) {
+    // Initialize only the Cirque Pinnacle trackpad
     cirque_pinnacle_init();
-    uprintf("Custom pointing_device_init: Cirque initialized\n");
+    uprintf("Trackpad only: Cirque Pinnacle initialized\n");
 }
 
-report_mouse_t pointing_device_get_report(void) {
-    report_mouse_t cirque_report = cirque_pinnacle_get_report();
+report_mouse_t pointing_device_driver_get_report(report_mouse_t* mouse_report) {
+    // Get pointer report ONLY from the trackpad
+    report_mouse_t report = cirque_pinnacle_get_report();
+    // Copy result to the mouse_report pointer if QMK expects it
+    *mouse_report = report;
+    return report;
+}
 
-    // Debug print for troubleshooting
-    uprintf("Custom get_report: Cirque x=%d y=%d v=%d h=%d btn=%d\n",
-            cirque_report.x, cirque_report.y, cirque_report.v, cirque_report.h, cirque_report.buttons);
-
-    return cirque_report;
+void pointing_device_driver_task(void) {
+    // If QMK version expects a periodic task, call the trackpad task
+    cirque_pinnacle_task();
 }
